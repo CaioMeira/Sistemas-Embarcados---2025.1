@@ -9,6 +9,7 @@
 - StateChart detalhado do processo
 - Descrição de Hardware
 - Deve ter controle PID on-off
+- Ligar o Mixer quando tiver mais que 1°C de diferença entre os sensores
 
 ### Sugestões
 
