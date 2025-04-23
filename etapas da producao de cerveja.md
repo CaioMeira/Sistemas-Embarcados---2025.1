@@ -1,6 +1,4 @@
-Produção de cerveja de acordo com a [Propeq]([https://pages.github.com/](https://propeq.com/producao-cerveja-chope/?gad_source=1&gad_campaignid=20238179683&gbraid=0AAAAADRfBVHNSxnBHSjGu-Nv5dQWGFuNG&gclid=CjwKCAjwn6LABhBSEiwAsNJrjq1d2HUEP0pwY-wn1CifsBPHj2sg1ZaxqYUvRS7mAZ9xY_N5TGf_FBoCczUQAvD_BwE)).
-
-
+Fonte: Propeq, disponível em: https://encr.pw/C3rZ6
 
 ### Malteação ###
 
