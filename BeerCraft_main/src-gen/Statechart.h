@@ -115,6 +115,10 @@ class TimedSctEvent : public SctEvent
 #define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_1 0
 #define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_2 0
 #define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_3 0
+#define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_START 0
+#define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX1 0
+#define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX2 0
+#define SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX3 0
 #define SCVI_MAIN_REGION_STATECOMPLETE 0
 
 
@@ -139,10 +143,14 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 			main_region_StateOperation_Operation_running_StateProcedure_1,
 			main_region_StateOperation_Operation_running_StateProcedure_2,
 			main_region_StateOperation_Operation_running_StateProcedure_3,
+			main_region_StateOperation_Operation_running_StateProcedure_Start,
+			main_region_StateOperation_Operation_running_State_Mix1,
+			main_region_StateOperation_Operation_running_State_Mix2,
+			main_region_StateOperation_Operation_running_State_Mix3,
 			main_region_StateComplete
 		} StatechartStates;
 					
-		static const sc_integer numStates = 11;
+		static const sc_integer numStates = 15;
 		
 		
 		/*! Raises the in event 'Start_Init' that is defined in the default interface scope. */
@@ -179,6 +187,42 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		sc_integer getProcedure3_time() const;
 		/*! Sets the value of the variable 'procedure3_time' that is defined in the default interface scope. */
 		void setProcedure3_time(sc_integer procedure3_time);
+		/*! Gets the value of the variable 'temp1' that is defined in the default interface scope. */
+		sc_integer getTemp1() const;
+		/*! Sets the value of the variable 'temp1' that is defined in the default interface scope. */
+		void setTemp1(sc_integer temp1);
+		/*! Gets the value of the variable 'temp2' that is defined in the default interface scope. */
+		sc_integer getTemp2() const;
+		/*! Sets the value of the variable 'temp2' that is defined in the default interface scope. */
+		void setTemp2(sc_integer temp2);
+		/*! Gets the value of the variable 'temp3' that is defined in the default interface scope. */
+		sc_integer getTemp3() const;
+		/*! Sets the value of the variable 'temp3' that is defined in the default interface scope. */
+		void setTemp3(sc_integer temp3);
+		/*! Gets the value of the variable 'mixtest1' that is defined in the default interface scope. */
+		sc_integer getMixtest1() const;
+		/*! Sets the value of the variable 'mixtest1' that is defined in the default interface scope. */
+		void setMixtest1(sc_integer mixtest1);
+		/*! Gets the value of the variable 'mixcap1' that is defined in the default interface scope. */
+		sc_integer getMixcap1() const;
+		/*! Sets the value of the variable 'mixcap1' that is defined in the default interface scope. */
+		void setMixcap1(sc_integer mixcap1);
+		/*! Gets the value of the variable 'mixtest2' that is defined in the default interface scope. */
+		sc_integer getMixtest2() const;
+		/*! Sets the value of the variable 'mixtest2' that is defined in the default interface scope. */
+		void setMixtest2(sc_integer mixtest2);
+		/*! Gets the value of the variable 'mixcap2' that is defined in the default interface scope. */
+		sc_integer getMixcap2() const;
+		/*! Sets the value of the variable 'mixcap2' that is defined in the default interface scope. */
+		void setMixcap2(sc_integer mixcap2);
+		/*! Gets the value of the variable 'mixtest3' that is defined in the default interface scope. */
+		sc_integer getMixtest3() const;
+		/*! Sets the value of the variable 'mixtest3' that is defined in the default interface scope. */
+		void setMixtest3(sc_integer mixtest3);
+		/*! Gets the value of the variable 'mixcap3' that is defined in the default interface scope. */
+		sc_integer getMixcap3() const;
+		/*! Sets the value of the variable 'mixcap3' that is defined in the default interface scope. */
+		void setMixcap3(sc_integer mixcap3);
 		//! Inner class for default interface scope operation callbacks.
 		class OperationCallback
 		{
@@ -190,6 +234,10 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 				virtual void ESP_UartStart(sc_integer rate) = 0;
 				
 				virtual void ESP_UartRead() = 0;
+				
+				virtual void ESP_CheckDiff() = 0;
+				
+				virtual void ESP_SetTemperature(sc_integer temperature) = 0;
 				
 				
 		};
@@ -265,6 +313,15 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		sc_integer procedure1_time;
 		sc_integer procedure2_time;
 		sc_integer procedure3_time;
+		sc_integer temp1;
+		sc_integer temp2;
+		sc_integer temp3;
+		sc_integer mixtest1;
+		sc_integer mixcap1;
+		sc_integer mixtest2;
+		sc_integer mixcap2;
+		sc_integer mixtest3;
+		sc_integer mixcap3;
 		/*! Raises the in event 'Start_Init' that is defined in the default interface scope. */
 		void internal_raiseStart_Init();
 		sc_boolean Start_Init_raised;
@@ -314,6 +371,10 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		void enact_main_region_StateOperation_Operation_running_StateProcedure_1();
 		void enact_main_region_StateOperation_Operation_running_StateProcedure_2();
 		void enact_main_region_StateOperation_Operation_running_StateProcedure_3();
+		void enact_main_region_StateOperation_Operation_running_StateProcedure_Start();
+		void enact_main_region_StateOperation_Operation_running_State_Mix1();
+		void enact_main_region_StateOperation_Operation_running_State_Mix2();
+		void enact_main_region_StateOperation_Operation_running_State_Mix3();
 		void enact_main_region_StateComplete();
 		void exact_main_region_StateInit_Initialization_Progress_Start_init();
 		void exact_main_region_StateInit_Initialization_Progress_End_init();
@@ -327,9 +388,12 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		void enseq_main_region_StateIdle_default();
 		void enseq_main_region_StateConfig_default();
 		void enseq_main_region_StateOperation_default();
-		void enseq_main_region_StateOperation_Operation_running_StateProcedure_1_default();
 		void enseq_main_region_StateOperation_Operation_running_StateProcedure_2_default();
 		void enseq_main_region_StateOperation_Operation_running_StateProcedure_3_default();
+		void enseq_main_region_StateOperation_Operation_running_StateProcedure_Start_default();
+		void enseq_main_region_StateOperation_Operation_running_State_Mix1_default();
+		void enseq_main_region_StateOperation_Operation_running_State_Mix2_default();
+		void enseq_main_region_StateOperation_Operation_running_State_Mix3_default();
 		void enseq_main_region_StateComplete_default();
 		void enseq_main_region_default();
 		void enseq_main_region_StateInit_Initialization_Progress_default();
@@ -344,6 +408,10 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		void exseq_main_region_StateOperation_Operation_running_StateProcedure_1();
 		void exseq_main_region_StateOperation_Operation_running_StateProcedure_2();
 		void exseq_main_region_StateOperation_Operation_running_StateProcedure_3();
+		void exseq_main_region_StateOperation_Operation_running_StateProcedure_Start();
+		void exseq_main_region_StateOperation_Operation_running_State_Mix1();
+		void exseq_main_region_StateOperation_Operation_running_State_Mix2();
+		void exseq_main_region_StateOperation_Operation_running_State_Mix3();
 		void exseq_main_region_StateComplete();
 		void exseq_main_region();
 		void exseq_main_region_StateInit_Initialization_Progress();
@@ -361,6 +429,10 @@ class Statechart : public sc::timer::TimedInterface, public sc::EventDrivenInter
 		sc_integer main_region_StateOperation_Operation_running_StateProcedure_1_react(const sc_integer transitioned_before);
 		sc_integer main_region_StateOperation_Operation_running_StateProcedure_2_react(const sc_integer transitioned_before);
 		sc_integer main_region_StateOperation_Operation_running_StateProcedure_3_react(const sc_integer transitioned_before);
+		sc_integer main_region_StateOperation_Operation_running_StateProcedure_Start_react(const sc_integer transitioned_before);
+		sc_integer main_region_StateOperation_Operation_running_State_Mix1_react(const sc_integer transitioned_before);
+		sc_integer main_region_StateOperation_Operation_running_State_Mix2_react(const sc_integer transitioned_before);
+		sc_integer main_region_StateOperation_Operation_running_State_Mix3_react(const sc_integer transitioned_before);
 		sc_integer main_region_StateComplete_react(const sc_integer transitioned_before);
 		void clearInEvents();
 		void microStep();

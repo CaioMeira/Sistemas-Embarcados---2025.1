@@ -15,9 +15,18 @@ Statechart::Statechart() :
 	led_init_pin(2),
 	baud_rate(115200),
 	init_time(4000),
-	procedure1_time(3000),
-	procedure2_time(3000),
-	procedure3_time(3000),
+	procedure1_time(10000),
+	procedure2_time(10000),
+	procedure3_time(10000),
+	temp1(50),
+	temp2(50),
+	temp3(50),
+	mixtest1(0),
+	mixcap1(0),
+	mixtest2(0),
+	mixcap2(0),
+	mixtest3(0),
+	mixcap3(0),
 	Start_Init_raised(false),
 	Total_Reset_raised(false),
 	Start_Config_raised(false),
@@ -258,7 +267,7 @@ sc_boolean Statechart::isStateActive(StatechartStates state) const
 		}
 		case main_region_StateOperation :
 		{
-			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION] >= main_region_StateOperation && stateConfVector[SCVI_MAIN_REGION_STATEOPERATION] <= main_region_StateOperation_Operation_running_StateProcedure_3);
+			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION] >= main_region_StateOperation && stateConfVector[SCVI_MAIN_REGION_STATEOPERATION] <= main_region_StateOperation_Operation_running_State_Mix3);
 			break;
 		}
 		case main_region_StateOperation_Operation_running_StateProcedure_1 :
@@ -274,6 +283,26 @@ sc_boolean Statechart::isStateActive(StatechartStates state) const
 		case main_region_StateOperation_Operation_running_StateProcedure_3 :
 		{
 			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_3] == main_region_StateOperation_Operation_running_StateProcedure_3);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_StateProcedure_Start :
+		{
+			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATEPROCEDURE_START] == main_region_StateOperation_Operation_running_StateProcedure_Start);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix1 :
+		{
+			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX1] == main_region_StateOperation_Operation_running_State_Mix1);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix2 :
+		{
+			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX2] == main_region_StateOperation_Operation_running_State_Mix2);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix3 :
+		{
+			return (sc_boolean) (stateConfVector[SCVI_MAIN_REGION_STATEOPERATION_OPERATION_RUNNING_STATE_MIX3] == main_region_StateOperation_Operation_running_State_Mix3);
 			break;
 		}
 		case main_region_StateComplete :
@@ -406,6 +435,96 @@ void Statechart::setProcedure3_time(sc_integer procedure3_time_)
 {
 	this->procedure3_time = procedure3_time_;
 }
+sc_integer Statechart::getTemp1() const
+{
+	return temp1
+	;
+}
+
+void Statechart::setTemp1(sc_integer temp1_)
+{
+	this->temp1 = temp1_;
+}
+sc_integer Statechart::getTemp2() const
+{
+	return temp2
+	;
+}
+
+void Statechart::setTemp2(sc_integer temp2_)
+{
+	this->temp2 = temp2_;
+}
+sc_integer Statechart::getTemp3() const
+{
+	return temp3
+	;
+}
+
+void Statechart::setTemp3(sc_integer temp3_)
+{
+	this->temp3 = temp3_;
+}
+sc_integer Statechart::getMixtest1() const
+{
+	return mixtest1
+	;
+}
+
+void Statechart::setMixtest1(sc_integer mixtest1_)
+{
+	this->mixtest1 = mixtest1_;
+}
+sc_integer Statechart::getMixcap1() const
+{
+	return mixcap1
+	;
+}
+
+void Statechart::setMixcap1(sc_integer mixcap1_)
+{
+	this->mixcap1 = mixcap1_;
+}
+sc_integer Statechart::getMixtest2() const
+{
+	return mixtest2
+	;
+}
+
+void Statechart::setMixtest2(sc_integer mixtest2_)
+{
+	this->mixtest2 = mixtest2_;
+}
+sc_integer Statechart::getMixcap2() const
+{
+	return mixcap2
+	;
+}
+
+void Statechart::setMixcap2(sc_integer mixcap2_)
+{
+	this->mixcap2 = mixcap2_;
+}
+sc_integer Statechart::getMixtest3() const
+{
+	return mixtest3
+	;
+}
+
+void Statechart::setMixtest3(sc_integer mixtest3_)
+{
+	this->mixtest3 = mixtest3_;
+}
+sc_integer Statechart::getMixcap3() const
+{
+	return mixcap3
+	;
+}
+
+void Statechart::setMixcap3(sc_integer mixcap3_)
+{
+	this->mixcap3 = mixcap3_;
+}
 void Statechart::setOperationCallback(OperationCallback* operationCallback)
 {
 	ifaceOperationCallback = operationCallback;
@@ -444,24 +563,63 @@ void Statechart::enact_main_region_StateConfig()
 void Statechart::enact_main_region_StateOperation_Operation_running_StateProcedure_1()
 {
 	/* Entry action for state 'StateProcedure_1'. */
-	timerService->setTimer(this, (sc_eventid)(&timeEvents[1]), ((sc_time) procedure1_time), false);
+	timerService->setTimer(this, (sc_eventid)(&timeEvents[1]), ((sc_time) 1000), false);
 	ifaceOperationCallback->ESP_UartRead();
+	ifaceOperationCallback->ESP_SetTemperature(temp1);
 }
 
 /* Entry action for state 'StateProcedure_2'. */
 void Statechart::enact_main_region_StateOperation_Operation_running_StateProcedure_2()
 {
 	/* Entry action for state 'StateProcedure_2'. */
-	timerService->setTimer(this, (sc_eventid)(&timeEvents[2]), ((sc_time) procedure2_time), false);
+	timerService->setTimer(this, (sc_eventid)(&timeEvents[2]), ((sc_time) 1000), false);
 	ifaceOperationCallback->ESP_UartRead();
+	ifaceOperationCallback->ESP_SetTemperature(temp2);
 }
 
 /* Entry action for state 'StateProcedure_3'. */
 void Statechart::enact_main_region_StateOperation_Operation_running_StateProcedure_3()
 {
 	/* Entry action for state 'StateProcedure_3'. */
-	timerService->setTimer(this, (sc_eventid)(&timeEvents[3]), ((sc_time) procedure3_time), false);
+	timerService->setTimer(this, (sc_eventid)(&timeEvents[3]), ((sc_time) 1000), false);
 	ifaceOperationCallback->ESP_UartRead();
+	ifaceOperationCallback->ESP_SetTemperature(temp3);
+}
+
+void Statechart::enact_main_region_StateOperation_Operation_running_StateProcedure_Start()
+{
+	/* Entry action for state 'StateProcedure_Start'. */
+	setMixtest1(0);
+	setMixtest2(0);
+	setMixtest3(0);
+	setMixcap1((procedure1_time / 1000));
+	setMixcap2((procedure2_time / 1000));
+	setMixcap3((procedure3_time / 1000));
+	completed = true;
+}
+
+void Statechart::enact_main_region_StateOperation_Operation_running_State_Mix1()
+{
+	/* Entry action for state 'State_Mix1'. */
+	ifaceOperationCallback->ESP_CheckDiff();
+	setMixtest1(mixtest1 + 1);
+	completed = true;
+}
+
+void Statechart::enact_main_region_StateOperation_Operation_running_State_Mix2()
+{
+	/* Entry action for state 'State_Mix2'. */
+	ifaceOperationCallback->ESP_CheckDiff();
+	setMixtest2(mixtest2 + 1);
+	completed = true;
+}
+
+void Statechart::enact_main_region_StateOperation_Operation_running_State_Mix3()
+{
+	/* Entry action for state 'State_Mix3'. */
+	ifaceOperationCallback->ESP_CheckDiff();
+	setMixtest3(mixtest3 + 1);
+	completed = true;
 }
 
 /* Entry action for state 'StateComplete'. */
@@ -559,14 +717,6 @@ void Statechart::enseq_main_region_StateOperation_default()
 	enseq_main_region_StateOperation_Operation_running_default();
 }
 
-/* 'default' enter sequence for state StateProcedure_1 */
-void Statechart::enseq_main_region_StateOperation_Operation_running_StateProcedure_1_default()
-{
-	/* 'default' enter sequence for state StateProcedure_1 */
-	enact_main_region_StateOperation_Operation_running_StateProcedure_1();
-	stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_1;
-}
-
 /* 'default' enter sequence for state StateProcedure_2 */
 void Statechart::enseq_main_region_StateOperation_Operation_running_StateProcedure_2_default()
 {
@@ -581,6 +731,38 @@ void Statechart::enseq_main_region_StateOperation_Operation_running_StateProcedu
 	/* 'default' enter sequence for state StateProcedure_3 */
 	enact_main_region_StateOperation_Operation_running_StateProcedure_3();
 	stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_3;
+}
+
+/* 'default' enter sequence for state StateProcedure_Start */
+void Statechart::enseq_main_region_StateOperation_Operation_running_StateProcedure_Start_default()
+{
+	/* 'default' enter sequence for state StateProcedure_Start */
+	enact_main_region_StateOperation_Operation_running_StateProcedure_Start();
+	stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_Start;
+}
+
+/* 'default' enter sequence for state State_Mix1 */
+void Statechart::enseq_main_region_StateOperation_Operation_running_State_Mix1_default()
+{
+	/* 'default' enter sequence for state State_Mix1 */
+	enact_main_region_StateOperation_Operation_running_State_Mix1();
+	stateConfVector[0] = main_region_StateOperation_Operation_running_State_Mix1;
+}
+
+/* 'default' enter sequence for state State_Mix2 */
+void Statechart::enseq_main_region_StateOperation_Operation_running_State_Mix2_default()
+{
+	/* 'default' enter sequence for state State_Mix2 */
+	enact_main_region_StateOperation_Operation_running_State_Mix2();
+	stateConfVector[0] = main_region_StateOperation_Operation_running_State_Mix2;
+}
+
+/* 'default' enter sequence for state State_Mix3 */
+void Statechart::enseq_main_region_StateOperation_Operation_running_State_Mix3_default()
+{
+	/* 'default' enter sequence for state State_Mix3 */
+	enact_main_region_StateOperation_Operation_running_State_Mix3();
+	stateConfVector[0] = main_region_StateOperation_Operation_running_State_Mix3;
 }
 
 /* 'default' enter sequence for state StateComplete */
@@ -689,6 +871,34 @@ void Statechart::exseq_main_region_StateOperation_Operation_running_StateProcedu
 	exact_main_region_StateOperation_Operation_running_StateProcedure_3();
 }
 
+/* Default exit sequence for state StateProcedure_Start */
+void Statechart::exseq_main_region_StateOperation_Operation_running_StateProcedure_Start()
+{
+	/* Default exit sequence for state StateProcedure_Start */
+	stateConfVector[0] = main_region_StateOperation;
+}
+
+/* Default exit sequence for state State_Mix1 */
+void Statechart::exseq_main_region_StateOperation_Operation_running_State_Mix1()
+{
+	/* Default exit sequence for state State_Mix1 */
+	stateConfVector[0] = main_region_StateOperation;
+}
+
+/* Default exit sequence for state State_Mix2 */
+void Statechart::exseq_main_region_StateOperation_Operation_running_State_Mix2()
+{
+	/* Default exit sequence for state State_Mix2 */
+	stateConfVector[0] = main_region_StateOperation;
+}
+
+/* Default exit sequence for state State_Mix3 */
+void Statechart::exseq_main_region_StateOperation_Operation_running_State_Mix3()
+{
+	/* Default exit sequence for state State_Mix3 */
+	stateConfVector[0] = main_region_StateOperation;
+}
+
 /* Default exit sequence for state StateComplete */
 void Statechart::exseq_main_region_StateComplete()
 {
@@ -753,6 +963,26 @@ void Statechart::exseq_main_region()
 			exseq_main_region_StateOperation_Operation_running_StateProcedure_3();
 			break;
 		}
+		case main_region_StateOperation_Operation_running_StateProcedure_Start :
+		{
+			exseq_main_region_StateOperation_Operation_running_StateProcedure_Start();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix1 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix1();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix2 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix2();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix3 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix3();
+			break;
+		}
 		case main_region_StateComplete :
 		{
 			exseq_main_region_StateComplete();
@@ -809,6 +1039,26 @@ void Statechart::exseq_main_region_StateOperation_Operation_running()
 			exseq_main_region_StateOperation_Operation_running_StateProcedure_3();
 			break;
 		}
+		case main_region_StateOperation_Operation_running_StateProcedure_Start :
+		{
+			exseq_main_region_StateOperation_Operation_running_StateProcedure_Start();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix1 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix1();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix2 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix2();
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix3 :
+		{
+			exseq_main_region_StateOperation_Operation_running_State_Mix3();
+			break;
+		}
 		default:
 			/* do nothing */
 			break;
@@ -833,7 +1083,7 @@ void Statechart::react_main_region_StateInit_Initialization_Progress__entry_Defa
 void Statechart::react_main_region_StateOperation_Operation_running__entry_Default()
 {
 	/* Default react sequence for initial entry  */
-	enseq_main_region_StateOperation_Operation_running_StateProcedure_1_default();
+	enseq_main_region_StateOperation_Operation_running_StateProcedure_Start_default();
 }
 
 sc_integer Statechart::main_region_StateZero_react(const sc_integer transitioned_before) {
@@ -1032,14 +1282,23 @@ sc_integer Statechart::main_region_StateOperation_Operation_running_StateProcedu
 	{ 
 		if ((transitioned_after) < (0))
 		{ 
-			if (timeEvents[1])
+			if ((mixtest1) > (mixcap1))
 			{ 
 				exseq_main_region_StateOperation_Operation_running_StateProcedure_1();
-				timeEvents[1] = false;
 				enseq_main_region_StateOperation_Operation_running_StateProcedure_2_default();
 				main_region_StateOperation_react(0);
 				transitioned_after = 0;
-			} 
+			}  else
+			{
+				if (timeEvents[1])
+				{ 
+					exseq_main_region_StateOperation_Operation_running_StateProcedure_1();
+					timeEvents[1] = false;
+					enseq_main_region_StateOperation_Operation_running_State_Mix1_default();
+					main_region_StateOperation_react(0);
+					transitioned_after = 0;
+				} 
+			}
 		} 
 		/* If no transition was taken */
 		if ((transitioned_after) == (transitioned_before))
@@ -1058,14 +1317,23 @@ sc_integer Statechart::main_region_StateOperation_Operation_running_StateProcedu
 	{ 
 		if ((transitioned_after) < (0))
 		{ 
-			if (timeEvents[2])
+			if ((mixtest2) > (mixcap2))
 			{ 
 				exseq_main_region_StateOperation_Operation_running_StateProcedure_2();
-				timeEvents[2] = false;
 				enseq_main_region_StateOperation_Operation_running_StateProcedure_3_default();
 				main_region_StateOperation_react(0);
 				transitioned_after = 0;
-			} 
+			}  else
+			{
+				if (timeEvents[2])
+				{ 
+					exseq_main_region_StateOperation_Operation_running_StateProcedure_2();
+					timeEvents[2] = false;
+					enseq_main_region_StateOperation_Operation_running_State_Mix2_default();
+					main_region_StateOperation_react(0);
+					transitioned_after = 0;
+				} 
+			}
 		} 
 		/* If no transition was taken */
 		if ((transitioned_after) == (transitioned_before))
@@ -1084,13 +1352,22 @@ sc_integer Statechart::main_region_StateOperation_Operation_running_StateProcedu
 	{ 
 		if ((transitioned_after) < (0))
 		{ 
-			if (timeEvents[3])
+			if ((mixtest3) > (mixcap3))
 			{ 
 				exseq_main_region_StateOperation();
-				timeEvents[3] = false;
 				enseq_main_region_StateComplete_default();
 				transitioned_after = 0;
-			} 
+			}  else
+			{
+				if (timeEvents[3])
+				{ 
+					exseq_main_region_StateOperation_Operation_running_StateProcedure_3();
+					timeEvents[3] = false;
+					enseq_main_region_StateOperation_Operation_running_State_Mix3_default();
+					main_region_StateOperation_react(0);
+					transitioned_after = 0;
+				} 
+			}
 		} 
 		/* If no transition was taken */
 		if ((transitioned_after) == (transitioned_before))
@@ -1099,6 +1376,82 @@ sc_integer Statechart::main_region_StateOperation_Operation_running_StateProcedu
 			transitioned_after = main_region_StateOperation_react(transitioned_before);
 		} 
 	} 
+	return transitioned_after;
+}
+
+sc_integer Statechart::main_region_StateOperation_Operation_running_StateProcedure_Start_react(const sc_integer transitioned_before) {
+	/* The reactions of state StateProcedure_Start. */
+	sc_integer transitioned_after = transitioned_before;
+	if (doCompletion)
+	{ 
+		/* Default exit sequence for state StateProcedure_Start */
+		stateConfVector[0] = main_region_StateOperation;
+		/* 'default' enter sequence for state StateProcedure_1 */
+		enact_main_region_StateOperation_Operation_running_StateProcedure_1();
+		stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_1;
+		main_region_StateOperation_react(0);
+	}  else
+	{
+		/* Always execute local reactions. */
+		transitioned_after = main_region_StateOperation_react(transitioned_before);
+	}
+	return transitioned_after;
+}
+
+sc_integer Statechart::main_region_StateOperation_Operation_running_State_Mix1_react(const sc_integer transitioned_before) {
+	/* The reactions of state State_Mix1. */
+	sc_integer transitioned_after = transitioned_before;
+	if (doCompletion)
+	{ 
+		/* Default exit sequence for state State_Mix1 */
+		stateConfVector[0] = main_region_StateOperation;
+		/* 'default' enter sequence for state StateProcedure_1 */
+		enact_main_region_StateOperation_Operation_running_StateProcedure_1();
+		stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_1;
+		main_region_StateOperation_react(0);
+	}  else
+	{
+		/* Always execute local reactions. */
+		transitioned_after = main_region_StateOperation_react(transitioned_before);
+	}
+	return transitioned_after;
+}
+
+sc_integer Statechart::main_region_StateOperation_Operation_running_State_Mix2_react(const sc_integer transitioned_before) {
+	/* The reactions of state State_Mix2. */
+	sc_integer transitioned_after = transitioned_before;
+	if (doCompletion)
+	{ 
+		/* Default exit sequence for state State_Mix2 */
+		stateConfVector[0] = main_region_StateOperation;
+		/* 'default' enter sequence for state StateProcedure_2 */
+		enact_main_region_StateOperation_Operation_running_StateProcedure_2();
+		stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_2;
+		main_region_StateOperation_react(0);
+	}  else
+	{
+		/* Always execute local reactions. */
+		transitioned_after = main_region_StateOperation_react(transitioned_before);
+	}
+	return transitioned_after;
+}
+
+sc_integer Statechart::main_region_StateOperation_Operation_running_State_Mix3_react(const sc_integer transitioned_before) {
+	/* The reactions of state State_Mix3. */
+	sc_integer transitioned_after = transitioned_before;
+	if (doCompletion)
+	{ 
+		/* Default exit sequence for state State_Mix3 */
+		stateConfVector[0] = main_region_StateOperation;
+		/* 'default' enter sequence for state StateProcedure_3 */
+		enact_main_region_StateOperation_Operation_running_StateProcedure_3();
+		stateConfVector[0] = main_region_StateOperation_Operation_running_StateProcedure_3;
+		main_region_StateOperation_react(0);
+	}  else
+	{
+		/* Always execute local reactions. */
+		transitioned_after = main_region_StateOperation_react(transitioned_before);
+	}
 	return transitioned_after;
 }
 
@@ -1188,6 +1541,26 @@ void Statechart::microStep() {
 		case main_region_StateOperation_Operation_running_StateProcedure_3 :
 		{
 			main_region_StateOperation_Operation_running_StateProcedure_3_react(-1);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_StateProcedure_Start :
+		{
+			main_region_StateOperation_Operation_running_StateProcedure_Start_react(-1);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix1 :
+		{
+			main_region_StateOperation_Operation_running_State_Mix1_react(-1);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix2 :
+		{
+			main_region_StateOperation_Operation_running_State_Mix2_react(-1);
+			break;
+		}
+		case main_region_StateOperation_Operation_running_State_Mix3 :
+		{
+			main_region_StateOperation_Operation_running_State_Mix3_react(-1);
 			break;
 		}
 		case main_region_StateComplete :
